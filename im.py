@@ -279,11 +279,14 @@ for index, row in convo.iterrows():
 			cat2_ = list_category_group[x_id_grup][1]
 			cat3_ = list_category_group[x_id_grup][2]
 
+
+			if type(caption) != bytes:
+				caption = caption.encode('utf-8')
+			caption = str(caption).replace("b'", "").replace("'","")
 			#menulis CSV tentang keyword yang cocok dengan convo/caption yang kena
-			isi = (str(username) + ',"' + str(post_id) + '",' + str(caption) + "," + str(i) + "," + str(mydict[i]) + "\n")
+			isi = str(username) + ', "' + str(post_id) + '",' + str(caption)
 			
-			if type(isi) != bytes:
-				isi = isi.encode('utf-8')
+
 			#labelf6 = "Username,PostID,Conversation,Time Stamp,Likes,Comments,Engagement,ID_Group,Category1,Category2,Category3\n"
 			id_group = str(x_id_grup)
 			linef6 = (username + ",'" + post_id + "," + caption + "," + 
@@ -292,7 +295,7 @@ for index, row in convo.iterrows():
 
 			df1 = df1.append(pd.DataFrame([[id_group,int(engagement_value)]],columns=['id_group','value']))
 
-			isi = str(isi)
+			isi = str(isi) + "," + str(i) + "," + str(mydict[i]) +"\n"
 			f6.write(linef6)
 			z.write(isi)
 
@@ -355,9 +358,9 @@ df3 = pd.DataFrame()
 all_category = {}
 #labelf8 = "Category,Attribute,Count\n"
 for index, row in df_f6.iterrows():
-	cat1__ = row['Category1'].lower()
-	cat2__ = row['Category2'].lower()
-	cat3__ = row['Category3'].lower()
+	cat1__ = str(row['Category1']).lower()
+	cat2__ = str(row['Category2']).lower()
+	cat3__ = str(row['Category3']).lower()
 
 	if cat1__ not in all_category:
 		all_category[cat1__] = 'Category1'
@@ -425,7 +428,7 @@ for i in user_list:
 
 	#Header = "Username,Total Post,Total Likes,Average Like,Total Comment,Average Comment,Engagement,Followers,Following,Reach\n"
 	h.write(str(i) + "," + str(count_user_posts[i]).replace(",","|") + "," + str(count_user_likes[i]).replace(",","|") + "," + str(average_likes).replace(",","|") + "," + str(count_user_comments[i]).replace(",","|") + "," + str(average_comments).replace(",","|") + "," + str(engagement) + "," + str(count_user_followers[i]).replace(",","|") + "," + str(count_user_following[i]).replace(",","|") + "," + str(user_reach) + "\n")
-	print (str(hit_user) + ". Username: " + i  + " Followers: " + str(count_user_followers[i]) + ". Following: " + str(count_user_following[i]) + ".")
+	print (str(hit_user) + ". Username: " + i  + " Followers: " + str(count_user_followers[i]) + ". Following: " + str(count_user_following[i]) + ". Reach:" + str(user_reach) )
 	hit_user += 1
 
 f.close()
